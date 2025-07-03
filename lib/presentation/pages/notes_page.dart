@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
 import '../cubit/notes_cubit.dart';
 import '../cubit/auth_cubit.dart';
 import '../../data/datasources/note_remote_ds.dart';
@@ -39,7 +40,6 @@ class NotesPage extends StatelessWidget {
               }
             },
             builder: (ctx, state) {
-              // ------ REPLACED the pattern‑matching switch with plain if/else ------
               if (state is NotesLoading) {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is NotesLoaded) {
@@ -62,9 +62,20 @@ class NotesPage extends StatelessWidget {
               }
             },
           ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () => _showAddOrEditDialog(context),
-            child: const Icon(Icons.add),
+
+          // ─── FAB wrapped in Builder so its context contains the NotesCubit ───
+          floatingActionButton: Builder(
+            builder: (fabCtx) {
+              final notesCubit = fabCtx.read<NotesCubit>();
+              return FloatingActionButton(
+                child: const Icon(Icons.add),
+                onPressed: () => _showAddOrEditDialog(
+                  fabCtx,
+                  cubit: notesCubit,
+                  note: null,
+                ),
+              );
+            },
           ),
         ),
       ),
@@ -72,13 +83,16 @@ class NotesPage extends StatelessWidget {
   }
 
   // ───────────────────────── Add / Edit Dialog ──────────────────────────
-  Future<void> _showAddOrEditDialog(BuildContext context, {Note? note}) async {
+  Future<void> _showAddOrEditDialog(
+    BuildContext context, {
+    required NotesCubit cubit,
+    Note? note,
+  }) async {
     final ctrl = TextEditingController(text: note?.text);
-    final cubit = context.read<NotesCubit>();
 
     await showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (_) => AlertDialog(
         title: Text(note == null ? 'New note' : 'Edit note'),
         content: TextField(
           controller: ctrl,
@@ -87,7 +101,7 @@ class NotesPage extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(ctx),
+            onPressed: () => Navigator.pop(context),
             child: const Text('Cancel'),
           ),
           FilledButton(
@@ -99,7 +113,7 @@ class NotesPage extends StatelessWidget {
                   ? cubit.addNote(txt)
                   : cubit.updateNote(note.id, txt);
 
-              Navigator.pop(ctx);
+              Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content:

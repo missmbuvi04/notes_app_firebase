@@ -47,7 +47,7 @@ class NoteCard extends StatelessWidget {
     );
   }
 
-  // ─────────────────────── edit dialog (local) ──────────────────────────
+  // ───────────────────── edit dialog ──────────────────────
   void _showEditDialog(BuildContext context, NotesCubit cubit) {
     final ctrl = TextEditingController(text: note.text);
 
