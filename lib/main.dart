@@ -4,7 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'presentation/cubit/auth_cubit.dart';
 import 'presentation/pages/login_page.dart';
-// import 'presentation/pages/notes_page.dart';
+import 'presentation/pages/notes_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
