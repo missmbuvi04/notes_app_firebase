@@ -1,3 +1,14 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+import '../cubit/notes_cubit.dart';
+import '../cubit/auth_cubit.dart';
+import '../../data/datasources/note_remote_ds.dart';
+import '../../data/repositories/note_repo_impl.dart';
+import '../widgets/note_card.dart';
+import '../../domain/entities/note.dart';
+
 class NotesPage extends StatelessWidget {
   const NotesPage({super.key});
 
