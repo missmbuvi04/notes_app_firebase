@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:email_validator/email_validator.dart';
 import '../cubit/auth_cubit.dart';
+
+bool isStrongPassword(String pass) {
+  final re = RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$');
+  return re.hasMatch(pass);
+}
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -8,17 +14,26 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-// ─────────── password‑strength helper ───────────
-bool isStrongPassword(String pass) {
-  final strong = RegExp(
-      r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$'); // ≥8, upper, lower, digit, symbol
-  return strong.hasMatch(pass);
-}
-
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  bool isLogin = true;
-  String email = '', pass = '';
+  bool isLogin = false; // show Sign‑up first
+  String email = '', password = '';
+
+  // ─── Form Controllers ───
+  final emailCtrl = TextEditingController();
+  final passCtrl = TextEditingController();
+
+  @override
+  void dispose() {
+    emailCtrl.dispose();
+    passCtrl.dispose();
+    super.dispose();
+  }
+
+  void _clearFields() {
+    emailCtrl.clear();
+    passCtrl.clear();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,53 +53,78 @@ class _LoginPageState extends State<LoginPage> {
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   const SizedBox(height: 16),
+
+                  // ─── Email ───
                   TextFormField(
+                    controller: emailCtrl,
                     decoration: const InputDecoration(labelText: 'Email'),
                     onSaved: (v) => email = v!.trim(),
-                    validator: (v) =>
-                        v != null && v.contains('@') ? null : 'Enter a valid email',
+                    validator: (v) => EmailValidator.validate(v ?? '')
+                        ? null
+                        : 'Enter a valid email',
                   ),
+
+                  // ─── Password ───
                   TextFormField(
+                    controller: passCtrl,
                     decoration: const InputDecoration(labelText: 'Password'),
                     obscureText: true,
-                    onSaved: (v) => pass = v!,
+                    onSaved: (v) => password = v!,
                     validator: (v) {
                       if ((v ?? '').isEmpty) return 'Password required';
                       if (!isLogin && !isStrongPassword(v!)) {
-                        return 'Min 8 chars, upper, lower, digit & symbol';
+                        return 'Min 8 chars, upper, lower, digit & symbol';
                       }
                       return null;
                     },
                   ),
+
                   const SizedBox(height: 16),
+
+                  // ─── Submit ───
                   FilledButton(
+                    child: Text(isLogin ? 'Login' : 'Create account'),
                     onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        _formKey.currentState!.save();
-                        final auth = context.read<AuthCubit>();
+                      if (!_formKey.currentState!.validate()) return;
+                      _formKey.currentState!.save();
 
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content:
-                                Text(isLogin ? 'Signing in…' : 'Creating account…'),
-                          ),
-                        );
+                      final auth = context.read<AuthCubit>();
+                      final messenger = ScaffoldMessenger.of(context); // captured before await
 
-                        try {
-                          isLogin
-                              ? await auth.signIn(email, pass)
-                              : await auth.signUp(email, pass);
-                        } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(e.toString())),
+                      try {
+                        if (isLogin) {
+                          await auth.signIn(email, password);
+                        } else {
+                          await auth.signUp(email, password);
+                          await auth.signOut();
+
+                          if (!mounted) return;  // guard async gap
+                          setState(() {
+                            isLogin = true;
+                            _clearFields();
+                          });
+                          messenger.showSnackBar(
+                            const SnackBar(
+                                content: Text('Account created — please log in')),
                           );
+                          return;
                         }
+                      } catch (e) {
+                        messenger.showSnackBar(
+                          SnackBar(content: Text(e.toString())),
+                        );
                       }
                     },
-                    child: Text(isLogin ? 'Login' : 'Create account'),
                   ),
+
+                  // ─── Toggle ───
                   TextButton(
-                    onPressed: () => setState(() => isLogin = !isLogin),
+                    onPressed: () {
+                      setState(() {
+                        isLogin = !isLogin;
+                        _clearFields(); // clear fields on toggle
+                      });
+                    },
                     child: Text(
                       isLogin
                           ? 'New here? Create an account'
