@@ -12,7 +12,12 @@
           "package_name": "com.example.notes_app_firebase"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "270293532686-uam70ksj94g0aul50hi7qve48u2fhob6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCJtI5CxG-aBXnYvzQFJFnuzGftjC6AXnY"
@@ -20,10 +25,57 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "270293532686-uam70ksj94g0aul50hi7qve48u2fhob6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "270293532686-i07c1q45ro8lf68ocu6ahg1ip5d3r5ai.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.notesAppFirebase"
+              }
+            }
+          ]
         }
       }
     }
   ],
   "configuration_version": "1"
 }
+
+
+
+
+
+
+//{
+//  "project_info": {
+//    "project_number": "270293532686",
+//    "project_id": "notesapp-3163b",
+//    "storage_bucket": "notesapp-3163b.firebasestorage.app"
+//  },
+//  "client": [
+//    {
+//      "client_info": {
+//        "mobilesdk_app_id": "1:270293532686:android:482a882a5771c150747c5f",
+//        "android_client_info": {
+//          "package_name": "com.example.notes_app_firebase"
+//        }
+//      },
+//      "oauth_client": [],
+//      "api_key": [
+//        {
+//          "current_key": "AIzaSyCJtI5CxG-aBXnYvzQFJFnuzGftjC6AXnY"
+//        }
+//      ],
+//      "services": {
+//        "appinvite_service": {
+//          "other_platform_oauth_client": []
+//        }
+//      }
+//    }
+//  ],
+//  "configuration_version": "1"
+//}
