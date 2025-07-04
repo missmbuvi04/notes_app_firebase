@@ -1,4 +1,4 @@
-# notes_app_firebase
+# Notes_app_firebase
 
 A simple Flutter app for creating, editing, and deleting notes — securely saved in Firebase. Users can sign up, log in, and manage their personal notes from anywhere.
 
