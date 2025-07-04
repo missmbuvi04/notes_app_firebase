@@ -140,3 +140,6 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
+// ─── Notes ───
+// - The `isStrongPassword` function checks for a strong password with at least 8 characters, including uppercase, lowercase, digits, and symbols.
+// - The `EmailValidator` is used to validate the email format.     

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import '../cubit/notes_cubit.dart';
 import '../cubit/auth_cubit.dart';
 import '../../data/datasources/note_remote_ds.dart';
@@ -82,7 +81,7 @@ class NotesPage extends StatelessWidget {
     );
   }
 
-  // ───────────────────────── Add / Edit Dialog ──────────────────────────
+  // Add Edit Dialog 
   Future<void> _showAddOrEditDialog(
     BuildContext context, {
     required NotesCubit cubit,
@@ -128,3 +127,11 @@ class NotesPage extends StatelessWidget {
     );
   }
 }
+// Note: The above code is a complete implementation of a NotesPage in a Flutter application.
+// It includes a Scaffold with an AppBar, a body that displays notes, and a FloatingActionButton to add or edit notes.
+// The `_showAddOrEditDialog` function is used to show a dialog for adding or editing notes.
+// The dialog contains a TextField for entering the note text and buttons to cancel or save the note.
+// The NotesCubit is used to manage the state of the notes, including loading, adding, and updating notes.
+//// The code also handles displaying error messages using a SnackBar when there are issues with loading or modifying notes.
+//// The `NotesPage` is wrapped in a `BlocProvider` to provide the `NotesCubit` to the widget tree.
+
